@@ -65,7 +65,7 @@ export function ApliteAdvantage() {
     <section className="bg-white py-8 sm:py-12 md:py-16 lg:py-20">
       <div className="px-4 sm:px-6 md:px-8 lg:px-10">
         <motion.div {...fadeInUp()} className="mb-8 sm:mb-10 md:mb-12 lg:mb-16 text-center">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl mb-4 sm:mb-6 md:mb-8 font-light tracking-tight text-[#24004c] text-center leading-tight">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl mb-4 sm:mb-6 md:mb-8 font-light tracking-tight text-black text-center leading-tight">
             Aplite Advantage
           </h2>
           <p className="w-full text-base sm:text-lg md:text-xl text-gray-400 leading-relaxed text-center px-4">

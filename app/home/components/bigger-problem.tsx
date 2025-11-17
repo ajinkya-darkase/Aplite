@@ -5,27 +5,28 @@ import { motion } from "framer-motion";
 import { fadeInUp, fadeInLeft } from "@/lib/utils";
 
 export function BiggerProblem() {
-
+  const data = [
+          "65% of US finance teams navigate the complexity of different routing numbers for ACH and wire payments",
+          "43% of businesses struggle to send international wires due to insufficient banking information from counterparties",
+          "Average time to complete domestic wire setup: 35 minutes",
+          "Average time to complete international SWIFT wire setup: 55 minutes"
+        ]
   return (
-    <section className="bg-white py-8 sm:py-12 px-4 sm:px-8 md:px-12">
+    <section className="bg-white py-8 sm:py-12 ">
       {/* Title */}
       <motion.div {...fadeInUp()}>
-        <h2 className="text-4xl md:text-7xl font-light tracking-tight text-[#24004c] text-center mb-6 sm:mb-8 md:mb-10">
+        <h2 className="text-4xl md:text-7xl font-light tracking-tight text-black text-center mb-6 sm:mb-8 md:mb-10">
           The Problem Is Bigger Than Fraud
         </h2>
         {/* Subtitle */}
-        <p className="w-full text-lg sm:text-xl text-gray-400 leading-relaxed text-center">
+        <p className="w-full text-lg sm:text-xl text-gray-400 leading-relaxed text-center mb-6 sm:mb-8 md:mb-10">
           The current system is broken in ways most people don&apos;t realize:
         </p>
       </motion.div>
       {/* Data Rows */}
       <motion.div {...fadeInLeft()} className="w-full max-w-6xl mx-auto flex flex-col gap-2 sm:gap-3">
-        {[
-          "65% of US finance teams navigate the complexity of different routing numbers for ACH and wire payments",
-          "43% of businesses struggle to send international wires due to insufficient banking information from counterparties",
-          "Average time to complete domestic wire setup: 35 minutes",
-          "Average time to complete international SWIFT wire setup: 55 minutes"
-        ].map((text, index) => (
+        {
+        data.map((text, index) => (
           <div
             key={index}
             className="group flex items-center border border-[#ebebeb] bg-[#fcfcff] rounded-xl sm:rounded-2xl px-3 sm:px-4 md:px-6 py-4 sm:py-5 md:py-6 mb-1 opacity-70 transition-all duration-500 hover:opacity-100 hover:scale-[1.02] hover:shadow-sm cursor-pointer"

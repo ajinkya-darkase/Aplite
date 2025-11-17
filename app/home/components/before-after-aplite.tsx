@@ -60,7 +60,7 @@ export function BeforeAfterAplite() {
     <section className="bg-white px-4 sm:px-8 md:px-12 py-8 sm:py-12 md:py-16 lg:pb-0">
       <div className="max-w-full mx-auto px-2 sm:px-4">
         <motion.div {...fadeInUp()}>
-          <h2 className="text-4xl mb-8 md:text-7xl font-light tracking-tight text-[#24004c] text-center">
+          <h2 className="text-4xl mb-8 md:text-7xl font-light tracking-tight text-black text-center">
             How Businesses Handle <br /> Banking Information - And How Aplite Redefines It
           </h2>
           <p className="w-full text-lg sm:text-xl text-gray-400 leading-relaxed text-center">

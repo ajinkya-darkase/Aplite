@@ -99,7 +99,7 @@ export function Benefits() {
       {/* <PaymentFraudNoMargin /> */}
       <div className=" sm:px-6">
         <motion.div {...fadeInUp()} className="mb-8 sm:mb-12 lg:mb-16 text-center">
-          <h2 className="text-4xl mb-8 md:text-7xl font-light tracking-tight text-[#24004c] text-center">
+          <h2 className="text-4xl mb-8 md:text-7xl font-light tracking-tight text-black text-center">
             How It Works
           </h2>
           <p className="w-full text-lg sm:text-xl text-gray-400 leading-relaxed text-center">

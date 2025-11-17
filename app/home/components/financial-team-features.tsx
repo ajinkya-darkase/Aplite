@@ -16,7 +16,7 @@ export function FinancialTeamFeatures() {
   return (
     <div className="bg-white py-8 sm:py-12 md:py-16 flex flex-col gap-8">
       <motion.div {...fadeInUp()} className="px-4 sm:px-6 md:px-8 lg:px-10 mb-6 sm:mb-8 md:mb-10">
-        <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-light tracking-tight text-[#24004c] text-center leading-tight">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-light tracking-tight text-black text-center leading-tight">
           Built For The Whole Financial Team
         </h2>
       </motion.div>

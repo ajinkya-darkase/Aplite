@@ -12,7 +12,7 @@ export function PaymentFraudNoMargin() {
         <div>
           {/* Heading */}
           <motion.div {...fadeInLeft()}>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight leading-tight text-center lg:text-left text-[#141b3c]">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight leading-tight text-center text-black lg:text-left">
               <div className="mb-2 lg:mb-1">Highly Secure</div>
               <div className="mb-2 lg:mb-1 lg:pl-20 xl:pl-64">Digital Payments Built</div>
               <div className="mb-0 lg:mb-0 lg:text-right">On Financial Trust.</div>

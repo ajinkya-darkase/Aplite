@@ -8,7 +8,7 @@ export function WhoWeServe() {
   return (
     <div className=" bg-white">
       <motion.div {...fadeInUp()} className="p-10">
-        <h2 className="text-4xl md:text-7xl font-light tracking-tight text-[#24004c] text-center">
+        <h2 className="text-4xl md:text-7xl font-light tracking-tight text-black text-center">
           Who We Serve
         </h2>
       </motion.div>
