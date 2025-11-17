@@ -319,13 +319,13 @@ export function Header() {
                 >
                   Home
                 </Link>
-                <Link
+                {/* <Link
                   href="/product"
                   className="block rounded-md px-3 py-2 text-base font-medium hover:bg-accent"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Product
-                </Link>
+                </Link> */}
                 <div className="space-y-1">
                   <button
                     onClick={() => setMobileSolutionsOpen(!mobileSolutionsOpen)}
