@@ -6,7 +6,7 @@ import { fadeInLeft, fadeInRight } from "@/lib/utils";
 
 export default function Section2() {
   return (
-    <section className="flex flex-col mb-12 sm:mb-16 lg:mb-20 px-4 sm:px-6 lg:px-8">
+    <section className="flex flex-col mb-12 sm:mb-16 lg:mb-20 px-4 sm:px-6 md:px-8 lg:px-8">
       {/*Upper Section */}
       <motion.div {...fadeInLeft()} className="flex flex-col md:flex-row gap-4 sm:gap-6 lg:gap-8 items-center mb-8 sm:mb-10 lg:mb-12">
         {/* Left: Image */}

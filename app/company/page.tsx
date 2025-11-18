@@ -42,13 +42,14 @@ export default function CompanyPage() {
         </motion.div>
       </section>
 
+      <BlankCard>
       <section>
-        <div className="bg-white rounded-2xl sm:rounded-3xl p-8 m-2 sm:m-4 md:m-6 lg:m-8 xl:m-10 space-y-10">
+        {/* <div className="bg-white rounded-2xl sm:rounded-3xl p-8 m-2 sm:m-4 md:m-6 lg:m-8 xl:m-10 space-y-10"> */}
           <Section2 />
           <Section3 />
-        </div>
+        {/* </div> */}
       </section>
-
+      </BlankCard>
       <BlankCard>
       <motion.div {...fadeInUp()}>
         <div className="space-y-4 text-center p-6">

@@ -4,8 +4,10 @@ import { Search } from "lucide-react";
 import Button from "../../../components/ui/Buttons";
 import { motion } from "framer-motion";
 import { fadeInUp } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 export default function TaglineSec() {
+  const router = useRouter();
   return (
     <motion.div {...fadeInUp()} className="flex flex-col mx-8 sm:mx-8 md:mx-10 my-12 items-center justify-center max-w-full rounded-2xl bg-white py-10 px-6 text-center">
       <h1 className="text-black text-2xl md:text-3xl font-semibold mb-6">
@@ -22,7 +24,12 @@ export default function TaglineSec() {
           />
         </div>
 
-        <Button variant="primary" size="lg" label="Get Started" className="w-auto px-6 sm:px-8 h-10 sm:h-12 md:h-14">
+        <Button 
+          variant="primary" 
+          size="lg" 
+          label="Get Started"
+          onClick={() => router.push("/get-started")} 
+          className="w-auto px-6 sm:px-8 h-10 sm:h-12 md:h-14">
         </Button>
       </div>
     </motion.div>

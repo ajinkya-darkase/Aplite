@@ -7,7 +7,7 @@ import { fadeInUp } from "@/lib/utils";
 
 export default function Section3() {
   return (
-    <section className="flex flex-col gap-8 ">
+    <section className="flex flex-col gap-8 px-4 sm:px-6 md:px-8 lg:px-8">
       <motion.div {...fadeInUp()}>
         <h1 className="text-3xl md:text-5xl font-normal leading-tight tracking-tight text-[#072484] text-center">
           AI agents lack payment <strong>infrastructure</strong>

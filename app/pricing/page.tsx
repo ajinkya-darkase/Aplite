@@ -69,7 +69,7 @@ export default function PricingPage() {
           buttonLabel=""
         />
       </motion.div>
-      <div className="min-h-screen px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+      <div className="min-h-screen mx-10 py-12 sm:py-16 lg:py-20">
         <div className="p-2 mx-auto">
           {/* Header */}
 
