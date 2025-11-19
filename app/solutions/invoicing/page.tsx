@@ -4,8 +4,17 @@ import { motion } from "framer-motion";
 import HeroSec from "@/components/sections/HeroSec";
 import Section2 from "./Sections/Section2";
 import Section3 from "./Sections/Section3";
+import React from "react";
 
 export default function InvoicingPage() {
+
+  React.useEffect(() => {
+    document.body.classList.add('solutions-gradient');
+    return () => {
+      document.body.classList.remove('solutions-gradient');
+    };
+  }, []);
+
   const fadeInAnimation = {
     initial: { opacity: 0, y: 30 },
     animate: { opacity: 1, y: 0 },

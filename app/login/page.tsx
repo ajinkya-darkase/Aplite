@@ -1,12 +1,10 @@
 "use client";
 
-import HeroSec from "@/components/sections/HeroSec";
-import BlankCard from "@/components/ui/BlankCard";
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff } from 'lucide-react';
 import Image from "next/image";
-// import { useAuth } from '@/lib/hooks/useAuth';
+import { authApi } from '@/lib/api/auth';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -15,7 +13,6 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  // const { login } = useAuth();
 
   // Apply purple gradient for login page
   React.useEffect(() => {
@@ -25,38 +22,37 @@ export default function LoginPage() {
     };
   }, []);
 
-  // const handleLogin = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   setError('');
-  //   setIsLoading(true);
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setIsLoading(true);
 
-  //   try {
-  //     await login(email, password);
-  //     router.push('/dashboard');
-  //   } catch (error: any) {
-  //     setError(error.message || 'Login failed');
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
+    try {
+      const response = await authApi.login(email, password);
+      
+      if (response.status === 'success' || response.success) {
+        // TODO: Replace with your actual redirect URL
+        // For external URL:
+        // window.location.href = 'https://your-dashboard-url.com';
+        
+        // For internal route (uncomment when ready):
+        router.push('/dashboard');
+      } else {
+        setError(response.message || 'Login failed');
+      }
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } }; message?: string };
+      setError(err.response?.data?.message || err.message || 'Login failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
   return (
     <>
-    {/* <div className="flex items-center justify-center">
-    <HeroSec
-        subtitle="aplite"
-        title="Welcome Back"
-        buttonLabel=""
-    />
-    </div> */}
-    {/* <BlankCard>
-      <div className="flex text-center">
-        <h1>Welcome Back</h1>
-      </div>
-    </BlankCard> */}
-    <div className="flex justify-center p-4">
-      <div className="w-full max-w-md">
-        <div className="bg-white rounded-2xl shadow-2xl p-8 border border-slate-200">
-          <div className="text-center mb-8">
+    <div className="flex h-[70vh] items-center justify-center m-8 py-8 sm:my-8 md:my-8">
+      <div className="w-full max-w-xl h-full flex items-center">
+        <div className="bg-white rounded-2xl shadow-2xl p-8 border border-slate-200 h-full w-full flex flex-col justify-center">
+          <div className="text-center mb-6">
             <div className="flex items-center justify-center mb-4">
               <Image src="/brand/Aplite-Logo-dark.svg" width={120} height={32} alt="Aplite" className="h-12" />
               {/* <h1 className="text-2xl font-bold text-slate-900">Aplite Admin</h1> */}
@@ -65,7 +61,7 @@ export default function LoginPage() {
             <p className="text-sm text-slate-600 mt-2">Sign in to access the dashboard</p>
           </div>
 
-          <form className="space-y-5">
+          <form onSubmit={handleLogin} className="space-y-6 mb-6">
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">Email Address</label>
               <input
@@ -101,6 +97,15 @@ export default function LoginPage() {
                   )}
                 </button>
               </div>
+              <div className="mt-2 text-right">
+                <button
+                  type="button"
+                  onClick={() => router.push('/forgot-password')}
+                  className="text-sm text-[#0A1544] hover:underline"
+                >
+                  Forgot password?
+                </button>
+              </div>
             </div>
 
             {error && (
@@ -117,13 +122,13 @@ export default function LoginPage() {
               {isLoading && (
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
               )}
-              {isLoading ? 'Signing In...' : 'Sign In'}
+              {isLoading ? 'logging In...' : 'log In'}
             </button>
           </form>
 
-          <div className="mt-6 text-center">
+          <div className="text-center">
             <p className="text-sm text-slate-600">
-              Don't have an account?{' '}
+              Don&apos;t have an account?{' '}
               <button
                 onClick={() => router.push('/get-started')}
                 className="text-[#0A1544] font-semibold hover:underline"

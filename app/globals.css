@@ -27,7 +27,7 @@
   }
 }
 
-@layer base {
+/* @layer base {
   body {
     @apply relative text-[hsl(var(--foreground))];
     
@@ -42,7 +42,7 @@
       );
     background-size: 120% 120%;
     animation: subtle-move 10s ease-in-out infinite;
-  }
+  } */
 
   body::before {
     content: '';
@@ -110,7 +110,21 @@
     background-size: 120% 120%;
     animation: subtle-move 10s ease-in-out infinite;
   }
-}
+
+  /* Green gradient for solutions pages */
+  body.solutions-gradient {
+    background: 
+      radial-gradient(
+        circle at 30% 30%,
+        #2e20f0 0%,
+        #4914FF 40%,
+        #0753f9 65%,
+        #2e24f4 85%,
+        #392dec 100%
+      );
+    background-size: 120% 120%;
+    animation: subtle-move 10s ease-in-out infinite;
+  }
 /* span {
   @apply bg-gradient-to-r from-[#111A4A] via-[#283EB0] to-[#B2C1FF] text-transparent bg-clip-text;
 } */

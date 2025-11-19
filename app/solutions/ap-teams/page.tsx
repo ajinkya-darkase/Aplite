@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import HeroSec from "@/components/sections/HeroSec";
+import React from "react";
 
 const Section2 = dynamic(() => import("./Sections/Section2"), {
   loading: () => (
@@ -20,6 +21,12 @@ const Section3 = dynamic(() => import("./Sections/Section3"), {
 
 export default function APTeamsPage() {
 
+  React.useEffect(() => {
+  document.body.classList.add('solutions-gradient');
+  return () => {
+    document.body.classList.remove('solutions-gradient');
+  };
+}, []);
 
   const fadeInAnimation = {
     initial: { opacity: 0, y: 30 },

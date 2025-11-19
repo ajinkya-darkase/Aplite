@@ -4,8 +4,17 @@ import { motion } from "framer-motion";
 import Section2 from "./Sections/Section2";
 import HeroSec from "@/components/sections/HeroSec";
 import Section3 from "./Sections/Section3";
+import React from "react";
 
 export default function BanksFintechPage() {
+
+  React.useEffect(() => {
+    document.body.classList.add('solutions-gradient');
+    return () => {
+      document.body.classList.remove('solutions-gradient');
+    };
+  }, []);
+
   const fadeInAnimation = {
     initial: { opacity: 0, y: 30 },
     animate: { opacity: 1, y: 0 },
