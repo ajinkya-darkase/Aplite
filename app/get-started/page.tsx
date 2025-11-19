@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { User, Mail, Eye, EyeOff } from 'lucide-react';
 import Image from 'next/image';
-import { authApi } from '@/lib/api/auth';
 import { useAuthStore } from '@/lib/store/authStore';
 
 export default function GetStartedPage() {
@@ -18,8 +17,8 @@ export default function GetStartedPage() {
   const [error, setError] = useState('');
   const router = useRouter();
   
-  const { setRegistrationData, setLoading, isLoading } = useAuthStore();
-
+  const { register, isLoading } = useAuthStore();
+console.log(formData)
   // Apply purple gradient for get-started page
   React.useEffect(() => {
     document.body.classList.add('home-gradient');
@@ -38,30 +37,21 @@ export default function GetStartedPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    setLoading(true);
 
-    try {
-      const response = await authApi.register(formData);
-      
-      if (response.status === 'success' || response.success) {
-        // Store registration data in Zustand
-        setRegistrationData(formData);
-        
-        // Redirect to OTP verification page
-        router.push('/verify-otp');
-      } else {
-        setError(response.message || 'Registration failed. Please try again.');
-      }
-    } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } }; message?: string };
-      setError(err.response?.data?.message || err.message || 'Registration failed. Please try again.');
-    } finally {
-      setLoading(false);
+    const success = await register(formData);
+    
+    if (success) {
+      // Redirect to OTP verification page
+      router.push('/verify-otp');
+    } else {
+      // Error is already set in the store
+      const storeError = useAuthStore.getState().error;
+      setError(storeError || 'Registration failed. Please try again.');
     }
   };
 
   return (
-    <div className="flex h-[70vh] md:h-[70vh] items-center justify-center p-8">
+    <div className="flex h-[90vh] md:h-[80vh] items-center justify-center p-8">
       <div className="w-full max-w-xl md:h-full flex items-center my-4 md:my-0">
         <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8 border border-slate-200 md:h-full w-full flex flex-col justify-center max-h-[90vh] md:max-h-full overflow-y-auto">
           <div className="text-center mb-3 md:mb-6">

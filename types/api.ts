@@ -21,9 +21,27 @@ export interface Company {
   logo?: string;
 }
 
+export interface RegisterPayload {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+}
+
+export interface VerifyOtpPayload {
+  email: string;
+  otp: string;
+}
+
 export interface ApiResponse<T = unknown> {
-  status: 'success' | 'error';
+  status?: 'success' | 'error';
   message?: string;
   data?: T;
-  success?: boolean; // Some APIs might use this
+  success?: boolean;
+  email?: string; // For registration response
+  access_token?: string; // For OTP verification response
+  token_type?: string;
+  expires_in?: number;
+  user?: User;
+  [key: string]: any; // Allow additional properties
 }

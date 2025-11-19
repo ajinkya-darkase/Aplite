@@ -27,7 +27,7 @@
   }
 }
 
-/* @layer base {
+@layer base {
   body {
     @apply relative text-[hsl(var(--foreground))];
     
@@ -42,8 +42,8 @@
       );
     background-size: 120% 120%;
     animation: subtle-move 10s ease-in-out infinite;
-  } */
-
+  }
+}
   body::before {
     content: '';
     position: fixed;

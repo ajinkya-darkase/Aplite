@@ -4,15 +4,16 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff } from 'lucide-react';
 import Image from "next/image";
-import { authApi } from '@/lib/api/auth';
+import { useAuthStore } from '@/lib/store/authStore';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  
+  const { login, isLoading } = useAuthStore();
 
   // Apply purple gradient for login page
   React.useEffect(() => {
@@ -25,26 +26,16 @@ export default function LoginPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    setIsLoading(true);
 
-    try {
-      const response = await authApi.login(email, password);
-      
-      if (response.status === 'success' || response.success) {
-        // TODO: Replace with your actual redirect URL
-        // For external URL:
-        // window.location.href = 'https://your-dashboard-url.com';
-        
-        // For internal route (uncomment when ready):
-        router.push('/dashboard');
-      } else {
-        setError(response.message || 'Login failed');
-      }
-    } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } }; message?: string };
-      setError(err.response?.data?.message || err.message || 'Login failed. Please try again.');
-    } finally {
-      setIsLoading(false);
+    const success = await login(email, password);
+    
+    if (success) {
+      // Redirect to dashboard
+      router.push('/dashboard');
+    } else {
+      // Error is already set in the store
+      const storeError = useAuthStore.getState().error;
+      setError(storeError || 'Login failed. Please try again.');
     }
   };
   return (

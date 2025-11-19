@@ -1,39 +1,40 @@
 import sharedApiClient from '../../shared/axios.config';
-import { ApiResponse, User, Company } from '../../../types/api';
+import { ApiResponse, User, Company, RegisterPayload, VerifyOtpPayload } from '../../../types/api';
 
 export const authApi = {
     // Register - sends OTP to email
-    register: async (data: {
-        firstName: string;
-        lastName: string;
-        workEmail: string;
-        password: string;
-    }): Promise<ApiResponse<{ message: string }>> => {
-        const response = await sharedApiClient.post('/auth/register', {
-            first_name: data.firstName,
-            last_name: data.lastName,
-            email: data.workEmail,
+    register: async (data: RegisterPayload): Promise<ApiResponse<{ message: string }>> => {
+        const payload = {
+            email: data.email,
             password: data.password,
-        });
+            firstName: data.firstName,
+            lastName: data.lastName,
+        };
+        
+        const response = await sharedApiClient.post('/auth/register', payload);
+        console.log("Registration response:", response);
         return response.data;
     },
 
     // Verify OTP
     verifyOtp: async (email: string, otp: string): Promise<ApiResponse<{ message: string }>> => {
-        const response = await sharedApiClient.post('/auth/verify-otp', {
-            email,
-            otp,
-        });
+        const payload: VerifyOtpPayload = { email, otp };
+        const response = await sharedApiClient.post('/auth/verify-otp', payload);
+        return response.data;
+    },
+
+    // Resend OTP
+    resendRegisterOtp: async (email: string): Promise<ApiResponse<{ message: string }>> => {
+        const response = await sharedApiClient.post('/auth/resend-register-otp', { email });
+        console.log("Resend OTP response:", response);
         return response.data;
     },
 
     // Login
-    login: async (username: string, password: string, companyId?: string): Promise<ApiResponse<{ user: User; company: Company }>> => {
+    login: async (email: string, password: string, companyId?: string): Promise<ApiResponse<{ user: User; company: Company }>> => {
         const loginPayload = {
-            username,
+            email,
             password,
-            loginidentity: 1,
-            company_id: companyId ? parseInt(companyId) : 10156
         };
 
         const response = await sharedApiClient.post('/auth/login', loginPayload);
