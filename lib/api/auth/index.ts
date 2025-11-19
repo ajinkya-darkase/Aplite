@@ -43,7 +43,7 @@ export const authApi = {
 
     // Logout
     logout: async (): Promise<ApiResponse> => {
-        const response = await sharedApiClient.get('/logout', { withCredentials: false });
+        const response = await sharedApiClient.post('/auth/logout');
 
         if (typeof document !== 'undefined') {
             document.cookie = 'SESSION=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';

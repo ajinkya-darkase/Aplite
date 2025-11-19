@@ -68,9 +68,11 @@ export const useAuthStore = create<AuthState>()(
           if (response.access_token && response.user) {
             console.log("Login successful");
             
-            // Store token in localStorage for axios interceptor
+            // Store token in localStorage and cookie
             if (typeof window !== "undefined") {
               localStorage.setItem("access_token", response.access_token);
+              // Set cookie for server-side middleware
+              document.cookie = `access_token=${response.access_token}; path=/; max-age=${response.expires_in || 604800}; SameSite=Lax`;
             }
             
             set({
@@ -123,9 +125,11 @@ export const useAuthStore = create<AuthState>()(
         } catch (error) {
           console.error("Logout error:", error);
         } finally {
-          // Clear token from localStorage
+          // Clear token from localStorage and cookie
           if (typeof window !== "undefined") {
             localStorage.removeItem("access_token");
+            // Clear cookie
+            document.cookie = "access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax";
           }
           
           set({

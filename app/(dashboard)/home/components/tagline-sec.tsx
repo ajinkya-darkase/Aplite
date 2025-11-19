@@ -1,7 +1,7 @@
 "use client";
 
 import { Search } from "lucide-react";
-import Button from "../../../components/ui/Buttons";
+import Button from "@/components/ui/Buttons";
 import { motion } from "framer-motion";
 import { fadeInUp } from "@/lib/utils";
 import { useRouter } from "next/navigation";

@@ -1,11 +1,11 @@
 import { ApliteAdvantage } from "./aplite-advantage";
-import { BeforeAfterAplite } from "@/app/home/components/before-after-aplite";
+import { BeforeAfterAplite } from "./before-after-aplite";
 import { Benefits } from "./benefits";
 import { BiggerProblem } from "./bigger-problem";
-import { FinancialTeamFeatures } from "@/app/home/components/financial-team-features";
-import { PaymentFraudNoMargin } from "@/app/home/components/payment-fraud-no-margin";
-import { Stats } from "@/app/home/components/stats";
-import { WhoWeServe } from "@/app/home/components/who-we-serve";
+import { FinancialTeamFeatures } from "./financial-team-features";
+import { PaymentFraudNoMargin } from "./payment-fraud-no-margin";
+import { Stats } from "./stats";
+import { WhoWeServe } from "./who-we-serve";
 import BlankCard from "@/components/ui/BlankCard";
 
 export function HomeContent() {

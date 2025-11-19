@@ -5,6 +5,7 @@ import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuthStore } from "@/lib/store/authStore";
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -14,6 +15,8 @@ export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const solutionsButtonRef = React.useRef<HTMLDivElement>(null);
   const closeTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+  
+  const { isAuthenticated, user, logout } = useAuthStore();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -38,6 +41,11 @@ export function Header() {
     closeTimeoutRef.current = setTimeout(() => {
       setSolutionsOpen(false);
     }, 150);
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    setMobileMenuOpen(false);
   };
 
   return (
@@ -98,24 +106,42 @@ export function Header() {
           </div>
 
           <div className="hidden items-center gap-4 md:flex">
-            <Button 
-              variant="secondary" 
-              size="sm" 
-              asChild
-              className={isScrolled ? "!border-gray-900 !text-gray-900 hover:!bg-gray-100" : ""}
-            >
-              <Link href="/login">Login</Link>
-            </Button>
-            <Button 
-              variant="primary" 
-              size="sm" 
-              asChild
-              className={`!bg-white !text-black ${
-                isScrolled ? "!border !border-gray-900" : "!border !border-white"
-              }`}
-            >
-              <Link href="/get-started">Contact Us</Link>
-            </Button>
+            {isAuthenticated ? (
+              <>
+                <span className={`text-sm font-medium ${isScrolled ? "text-gray-900" : "text-white"}`}>
+                  {user?.firstName || user?.email}
+                </span>
+                <Button 
+                  variant="secondary" 
+                  size="sm" 
+                  onClick={handleLogout}
+                  className={isScrolled ? "!border-gray-900 !text-gray-900 hover:!bg-gray-100" : ""}
+                >
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button 
+                  variant="secondary" 
+                  size="sm" 
+                  asChild
+                  className={isScrolled ? "!border-gray-900 !text-gray-900 hover:!bg-gray-100" : ""}
+                >
+                  <Link href="/login">Login</Link>
+                </Button>
+                <Button 
+                  variant="primary" 
+                  size="sm" 
+                  asChild
+                  className={`!bg-white !text-black ${
+                    isScrolled ? "!border !border-gray-900" : "!border !border-white"
+                  }`}
+                >
+                  <Link href="/get-started">Contact Us</Link>
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -404,16 +430,33 @@ export function Header() {
               {/* Bottom Buttons */}
               <div className="border-t p-4">
                 <div className="flex flex-col gap-3">
-                  <Button variant="secondary" asChild className="w-full justify-start">
-                    <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
-                      Login
-                    </Link>
-                  </Button>
-                  <Button asChild className="w-full">
-                    <Link href="/get-started" onClick={() => setMobileMenuOpen(false)}>
-                      Contact Us
-                    </Link>
-                  </Button>
+                  {isAuthenticated ? (
+                    <>
+                      <div className="px-3 py-2 text-sm font-medium">
+                        {user?.firstName || user?.email}
+                      </div>
+                      <Button 
+                        variant="secondary" 
+                        onClick={handleLogout}
+                        className="w-full justify-start"
+                      >
+                        Logout
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Button variant="secondary" asChild className="w-full justify-start">
+                        <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
+                          Login
+                        </Link>
+                      </Button>
+                      <Button asChild className="w-full">
+                        <Link href="/get-started" onClick={() => setMobileMenuOpen(false)}>
+                          Contact Us
+                        </Link>
+                      </Button>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
