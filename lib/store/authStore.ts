@@ -3,7 +3,7 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { authApi } from "@/lib/api/auth";
-import { User, Company } from "@/types/api";
+import { User, Company, ApiResponse } from "@/types/api";
 
 interface RegistrationData {
   firstName: string;
@@ -28,7 +28,7 @@ interface AuthState {
   error: string | null;
   
   // Actions
-  login: (username: string, password: string, companyId?: string) => Promise<boolean>;
+  login: (email: string, password: string) => Promise<boolean>;
   logout: () => Promise<void>;
   
   register: (data: RegistrationData) => Promise<boolean>;
@@ -58,11 +58,11 @@ export const useAuthStore = create<AuthState>()(
       error: null,
 
       // Login action
-      login: async (username, password, companyId) => {
+      login: async (email, password) => {
         set({ isLoading: true, error: null });
         
         try {
-          const response = await authApi.login(username, password, companyId);
+          const response: ApiResponse<{ user: User; company: Company }> = await authApi.login(email, password);
           
           // Check if we have access_token and user (direct response format)
           if (response.access_token && response.user) {
@@ -109,10 +109,21 @@ export const useAuthStore = create<AuthState>()(
           }
         } catch (error) {
           console.error("Login error:", error);
-          const err = error as { response?: { data?: { message?: string } }; message?: string };
+          const err = error as { response?: { data?: { message?: string }; status?: number }; message?: string };
+          
+          // Handle 401 Unauthorized (Invalid credentials)
+          let errorMessage = "Login failed";
+          if (err.response?.status === 401) {
+            errorMessage = err.response?.data?.message || "Invalid credentials";
+          } else if (err.response?.data?.message) {
+            errorMessage = err.response.data.message;
+          } else if (err.message) {
+            errorMessage = err.message;
+          }
+          
           set({ 
             isLoading: false, 
-            error: err.response?.data?.message || err.message || "Login failed" 
+            error: errorMessage
           });
           return false;
         }

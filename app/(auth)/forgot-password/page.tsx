@@ -3,12 +3,19 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from "next/image";
+import VerifyOtp from '@/components/sections/VerifyOtp';
+import ChangePassword from '@/components/sections/ChangePassword';
+import { authApi } from '@/lib/api/auth';
+
+type FlowStep = 'email' | 'otp' | 'change-password';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [currentStep, setCurrentStep] = useState<FlowStep>('email');
+  const [verifiedOtp, setVerifiedOtp] = useState('');
   const router = useRouter();
 
   // Apply purple gradient for forgot password page
@@ -26,21 +33,56 @@ export default function ForgotPasswordPage() {
     setIsLoading(true);
 
     try {
-      // TODO: Implement forgot password API call
-      // const response = await authApi.forgotPassword(email);
+      const response = await authApi.forgotPassword(email);
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      setSuccess('Password reset link has been sent to your email.');
+      // Check for success response with message and email
+      if (response.message && response.email) {
+        setSuccess('OTP sent to your email for password reset!');
+        // Move to OTP verification step
+        setTimeout(() => {
+          setCurrentStep('otp');
+        }, 1000);
+      } else {
+        setError('Failed to send OTP. Please try again.');
+      }
     } catch (error: unknown) {
       const err = error as { response?: { data?: { message?: string } }; message?: string };
-      setError(err.response?.data?.message || err.message || 'Failed to send reset link. Please try again.');
+      setError(err.response?.data?.message || err.message || 'Failed to send OTP. Please try again.');
     } finally {
       setIsLoading(false);
     }
   };
 
+  const handleOtpVerified = (otp: string) => {
+    setVerifiedOtp(otp);
+    setCurrentStep('change-password');
+  };
+
+  // Show OTP verification step
+  if (currentStep === 'otp') {
+    return (
+      <VerifyOtp 
+        mode="password-reset"
+        email={email}
+        onPasswordResetSuccess={handleOtpVerified}
+        onBack={() => setCurrentStep('email')}
+      />
+    );
+  }
+
+  // Show change password step
+  if (currentStep === 'change-password') {
+    return (
+      <ChangePassword 
+        email={email}
+        otp={verifiedOtp}
+        mode="forgot-password"
+        onBack={() => setCurrentStep('otp')}
+      />
+    );
+  }
+
+  // Show email input step
   return (
     <>
       <div className="flex min-h-[70vh] items-center justify-center m-8 py-8 sm:my-8 md:my-8">

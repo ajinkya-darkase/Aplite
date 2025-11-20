@@ -32,10 +32,18 @@ sharedApiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Token expired or invalid
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem('access_token');
-        window.location.href = '/login';
+      // Only redirect if we have a token (meaning user was authenticated)
+      // Don't redirect on login/auth endpoints
+      const isAuthEndpoint = error.config?.url?.includes('/auth/');
+      
+      if (typeof window !== 'undefined' && !isAuthEndpoint) {
+        const hasToken = localStorage.getItem('access_token');
+        if (hasToken) {
+          // Token expired or invalid - clear and redirect
+          localStorage.removeItem('access_token');
+          document.cookie = "access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax";
+          window.location.href = '/login';
+        }
       }
     }
     return Promise.reject(error);

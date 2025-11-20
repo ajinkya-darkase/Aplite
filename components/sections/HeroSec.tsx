@@ -10,6 +10,8 @@ interface HeroSecProps {
   description?: string;
   buttonLabel?: string;
   onButtonClick?: () => void;
+  centered?: boolean;
+  children?: React.ReactNode;
 }
 
 const HeroSec: React.FC<HeroSecProps> = ({
@@ -18,11 +20,13 @@ const HeroSec: React.FC<HeroSecProps> = ({
   description,
   buttonLabel = "Get Started",
   onButtonClick,
+  centered = false,
+  children,
 }) => {
   return (
-    <section className="relative  px-12 h-[80vh] flex flex-col justify-center text-white bg-transparent">
+    <section className={`relative px-12 min-h-[80vh] h-[80vh] flex flex-col justify-center text-white bg-transparent ${centered ? 'items-center' : ''}`}>
       {/* Text Container */}
-      <div className="max-w-5xl">
+      <div className={`max-w-5xl ${centered ? 'text-center flex flex-col items-center' : ''}`}>
         {/* Logo / Tagline */}
         {subtitle && (
           subtitle.toLowerCase() === "aplite" ? (
@@ -54,6 +58,13 @@ const HeroSec: React.FC<HeroSecProps> = ({
           <p className="text-lg md:text-2xl text-white max-w-3xl mb-10">
             {description}
           </p>
+        )}
+
+        {/* Custom Content (e.g., search input) */}
+        {children && (
+          <div className="w-full max-w-lg mb-6">
+            {children}
+          </div>
         )}
 
         {/* Button */}

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { User, Mail, Eye, EyeOff } from 'lucide-react';
 import Image from 'next/image';
 import { useAuthStore } from '@/lib/store/authStore';
+import VerifyOtp from '@/components/sections/VerifyOtp';
 
 export default function GetStartedPage() {
   const [formData, setFormData] = useState({
@@ -15,10 +16,10 @@ export default function GetStartedPage() {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+  const [showOtpVerification, setShowOtpVerification] = useState(false);
   const router = useRouter();
   
   const { register, isLoading } = useAuthStore();
-console.log(formData)
   // Apply purple gradient for get-started page
   React.useEffect(() => {
     document.body.classList.add('home-gradient');
@@ -41,14 +42,19 @@ console.log(formData)
     const success = await register(formData);
     
     if (success) {
-      // Redirect to OTP verification page
-      router.push('/verify-otp');
+      // Show OTP verification component
+      setShowOtpVerification(true);
     } else {
       // Error is already set in the store
       const storeError = useAuthStore.getState().error;
       setError(storeError || 'Registration failed. Please try again.');
     }
   };
+
+  // Show OTP verification if registration was successful
+  if (showOtpVerification) {
+    return <VerifyOtp onBack={() => setShowOtpVerification(false)} />;
+  }
 
   return (
     <div className="flex h-[90vh] md:h-[80vh] items-center justify-center p-8">

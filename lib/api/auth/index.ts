@@ -31,7 +31,7 @@ export const authApi = {
     },
 
     // Login
-    login: async (email: string, password: string, companyId?: string): Promise<ApiResponse<{ user: User; company: Company }>> => {
+    login: async (email: string, password: string): Promise<ApiResponse<{ user: User; company: Company }>> => {
         const loginPayload = {
             email,
             password,
@@ -61,6 +61,38 @@ export const authApi = {
     // Verify token
     verifyToken: async (): Promise<ApiResponse<{ valid: boolean }>> => {
         const response = await sharedApiClient.get('/verify-token');
+        return response.data;
+    },
+
+    // Forgot Password - sends OTP to email
+    forgotPassword: async (email: string): Promise<ApiResponse<{ message: string }>> => {
+        const response = await sharedApiClient.post('/auth/forgot-password', { email });
+        return response.data;
+    },
+
+    // Verify OTP and reset password (combined in one step)
+    verifyOtpResetPassword: async (email: string, otp: string, newPassword: string): Promise<ApiResponse<{ message: string }>> => {
+        const response = await sharedApiClient.post('/auth/verify-otp-reset-password', { 
+            email, 
+            otp,
+            newPassword 
+        });
+        return response.data;
+    },
+
+    // Resend OTP for password reset
+    resendOtpResetPassword: async (email: string): Promise<ApiResponse<{ message: string }>> => {
+        const response = await sharedApiClient.post('/auth/resend-otp-reset-password', { email });
+        return response.data;
+    },
+
+    // Change Password
+    changePassword: async (email: string, newPassword: string, otp: string): Promise<ApiResponse<{ message: string }>> => {
+        const response = await sharedApiClient.post('/auth/change-password', { 
+            email, 
+            newPassword,
+            otp 
+        });
         return response.data;
     },
 };

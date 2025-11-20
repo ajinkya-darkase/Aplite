@@ -38,10 +38,12 @@ export interface ApiResponse<T = unknown> {
   message?: string;
   data?: T;
   success?: boolean;
-  email?: string; // For registration response
+  email?: string; // For registration and forgot-password response
   access_token?: string; // For OTP verification response
   token_type?: string;
-  expires_in?: number;
+  expires_in?: number; // For login response (seconds)
+  expiresIn?: number; // For forgot-password OTP expiry (seconds)
+  expiryInSeconds?: number; // For resend-otp-reset-password OTP expiry (seconds)
   user?: User;
   [key: string]: any; // Allow additional properties
 }

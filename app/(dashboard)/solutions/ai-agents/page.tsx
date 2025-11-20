@@ -22,7 +22,7 @@ export default function AIAgentsPage() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-10">
       <section>
         <motion.div
           key="hero-sec1"
