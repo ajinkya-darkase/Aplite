@@ -30,8 +30,8 @@ export default function LoginPage() {
     const success = await login(email, password);
     
     if (success) {
-      // Redirect to dashboard
-      router.push('/dashboard');
+      // Redirect to home page
+      router.push('/');
     } else {
       // Error is already set in the store
       const storeError = useAuthStore.getState().error;

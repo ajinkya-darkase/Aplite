@@ -12,19 +12,27 @@ interface HeroSecProps {
   onButtonClick?: () => void;
   centered?: boolean;
   children?: React.ReactNode;
+  userAvatar?: React.ReactNode;
 }
 
 const HeroSec: React.FC<HeroSecProps> = ({
   title,
   subtitle,
   description,
-  buttonLabel = "Get Started",
+  buttonLabel,
   onButtonClick,
   centered = false,
   children,
+  userAvatar,
 }) => {
   return (
     <section className={`relative px-12 min-h-[80vh] h-[80vh] flex flex-col justify-center text-white bg-transparent ${centered ? 'items-center' : ''}`}>
+      {/* User Avatar in top right */}
+      {userAvatar && (
+        <div className="absolute top-8 right-12">
+          {userAvatar}
+        </div>
+      )}
       {/* Text Container */}
       <div className={`max-w-5xl ${centered ? 'text-center flex flex-col items-center' : ''}`}>
         {/* Logo / Tagline */}

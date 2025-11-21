@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import React, { useState, useEffect } from "react";
-import { Menu, X, ChevronDown } from "lucide-react";
+import React, { useState, useEffect, useRef } from "react";
+import { Menu, X, ChevronDown, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/lib/store/authStore";
 
@@ -13,8 +13,10 @@ export function Header() {
   const [mobileSolutionsOpen, setMobileSolutionsOpen] = useState(false);
   const [dropdownPosition, setDropdownPosition] = useState(0);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [showUserDropdown, setShowUserDropdown] = useState(false);
   const solutionsButtonRef = React.useRef<HTMLDivElement>(null);
   const closeTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+  const userDropdownRef = useRef<HTMLDivElement>(null);
   
   const { isAuthenticated, user, logout } = useAuthStore();
 
@@ -26,6 +28,23 @@ export function Header() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Close user dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (userDropdownRef.current && !userDropdownRef.current.contains(event.target as Node)) {
+        setShowUserDropdown(false);
+      }
+    };
+
+    if (showUserDropdown) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showUserDropdown]);
 
   const handleMouseEnter = () => {
     if (closeTimeoutRef.current) {
@@ -46,6 +65,15 @@ export function Header() {
   const handleLogout = async () => {
     await logout();
     setMobileMenuOpen(false);
+    setShowUserDropdown(false);
+  };
+
+  // Get user initials
+  const getUserInitials = () => {
+    if (!user) return "U";
+    const firstInitial = user.firstName?.charAt(0).toUpperCase() || "";
+    const lastInitial = user.lastName?.charAt(0).toUpperCase() || "";
+    return firstInitial + lastInitial || user.email?.charAt(0).toUpperCase() || "U";
   };
 
   return (
@@ -67,58 +95,87 @@ export function Header() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden items-center gap-8 md:flex">
-            <Link href="/" className={`text-base font-semibold transition-transform hover:scale-110 ${
-              isScrolled ? "text-gray-900" : "text-white"
-            }`}>
-              Home
-            </Link>
-            {/* <Link href="/product" className={`text-base font-semibold transition-transform hover:scale-110 ${
-              isScrolled ? "text-gray-900" : "text-white"
-            }`}>
-              Product
-            </Link> */}
-            <div 
-              className="relative" 
-              ref={solutionsButtonRef}
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-            >
-              <button
-                className={`flex items-center gap-1 text-base font-semibold transition-transform hover:scale-110 ${
-                  isScrolled ? "text-gray-900" : "text-white"
-                }`}
+          {!isAuthenticated && (
+            <div className="hidden items-center gap-8 md:flex">
+              <Link href="/" className={`text-base font-semibold transition-transform hover:scale-110 ${
+                isScrolled ? "text-gray-900" : "text-white"
+              }`}>
+                Home
+              </Link>
+              <div 
+                className="relative" 
+                ref={solutionsButtonRef}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
               >
-                Solutions
-                <ChevronDown className="h-4 w-4" />
-              </button>
+                <button
+                  className={`flex items-center gap-1 text-base font-semibold transition-transform hover:scale-110 ${
+                    isScrolled ? "text-gray-900" : "text-white"
+                  }`}
+                >
+                  Solutions
+                  <ChevronDown className="h-4 w-4" />
+                </button>
+              </div>
+              <Link href="/pricing" className={`text-base font-semibold transition-transform hover:scale-110 ${
+                isScrolled ? "text-gray-900" : "text-white"
+              }`}>
+                Pricing
+              </Link>
+              <Link href="/company" className={`text-base font-semibold transition-transform hover:scale-110 ${
+                isScrolled ? "text-gray-900" : "text-white"
+              }`}>
+                About Us
+              </Link>
             </div>
-            <Link href="/pricing" className={`text-base font-semibold transition-transform hover:scale-110 ${
-              isScrolled ? "text-gray-900" : "text-white"
-            }`}>
-              Pricing
-            </Link>
-            <Link href="/company" className={`text-base font-semibold transition-transform hover:scale-110 ${
-              isScrolled ? "text-gray-900" : "text-white"
-            }`}>
-              About Us
-            </Link>
-          </div>
+          )}
+          
+          {/* Spacer to maintain layout when authenticated */}
+          {isAuthenticated && (
+            <div className="hidden md:flex flex-1"></div>
+          )}
 
           <div className="hidden items-center gap-4 md:flex">
             {isAuthenticated ? (
               <>
-                <span className={`text-sm font-medium ${isScrolled ? "text-gray-900" : "text-white"}`}>
-                  {user?.firstName || user?.email}
-                </span>
                 <Button 
-                  variant="secondary" 
+                  variant="primary" 
                   size="sm" 
-                  onClick={handleLogout}
-                  className={isScrolled ? "!border-gray-900 !text-gray-900 hover:!bg-gray-100" : ""}
+                  asChild
+                  className={`${
+                    isScrolled 
+                      ? "!bg-[#0A1544] !text-white hover:!bg-[#101B5B]" 
+                      : "!bg-white !text-[#0A1544] hover:!bg-gray-100"
+                  }`}
                 >
-                  Logout
+                  <a href="https://aplite-vendor.vercel.app/login" target="_blank" rel="noopener noreferrer">
+                    Go to Console
+                  </a>
                 </Button>
+                <div className="relative" ref={userDropdownRef}>
+                  <button
+                    onClick={() => setShowUserDropdown(!showUserDropdown)}
+                    className={`w-10 h-10 rounded-full font-semibold flex items-center justify-center transition-colors shadow-lg ${
+                      isScrolled 
+                        ? "bg-[#0A1544] text-white hover:bg-[#101B5B]" 
+                        : "bg-white text-[#0A1544] hover:bg-gray-100"
+                    }`}
+                  >
+                    {getUserInitials()}
+                  </button>
+                  
+                  {showUserDropdown && (
+                    <div className="absolute top-full mt-2 right-0 bg-white rounded-lg shadow-xl border border-gray-200 py-2 min-w-[160px] z-50">
+                      <button
+                        onClick={handleLogout}
+                        className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2 transition-colors"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        Logout
+                      </button>
+                    </div>
+                  )}
+                </div>
               </>
             ) : (
               <>
@@ -158,12 +215,12 @@ export function Header() {
       </header>
 
       {/* Backdrop Blur Overlay */}
-      {solutionsOpen && (
+      {solutionsOpen && !isAuthenticated && (
         <div className="fixed inset-0 top-24 z-30 hidden backdrop-blur-sm md:block" />
       )}
 
       {/* Desktop Solutions Dropdown - Outside header */}
-      {solutionsOpen && (
+      {solutionsOpen && !isAuthenticated && (
         <div
           className="fixed top-24 z-40 hidden md:block pt-3"
           style={{ left: `${dropdownPosition}px` }}
@@ -337,109 +394,133 @@ export function Header() {
               </div>
 
               {/* Menu Items */}
-              <div className="flex-1 space-y-1 p-4">
-                <Link
-                  href="/"
-                  className="block rounded-md px-3 py-2 text-base font-medium hover:bg-accent"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Home
-                </Link>
-                {/* <Link
-                  href="/product"
-                  className="block rounded-md px-3 py-2 text-base font-medium hover:bg-accent"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Product
-                </Link> */}
-                <div className="space-y-1">
-                  <button
-                    onClick={() => setMobileSolutionsOpen(!mobileSolutionsOpen)}
-                    className="flex w-full items-center justify-between rounded-md px-3 py-2 text-base font-medium hover:bg-accent"
+              {!isAuthenticated && (
+                <div className="flex-1 space-y-1 p-4">
+                  <Link
+                    href="/"
+                    className="block rounded-md px-3 py-2 text-base font-medium hover:bg-accent"
+                    onClick={() => setMobileMenuOpen(false)}
                   >
-                    Solutions
-                    <ChevronDown
-                      className={`h-4 w-4 transition-transform ${
-                        mobileSolutionsOpen ? "rotate-180" : ""
-                      }`}
-                    />
-                  </button>
-                  {mobileSolutionsOpen && (
-                    <div className="space-y-1 pl-3">
-                      <Link
-                        href="/solutions/ap-teams"
-                        className="block rounded-md px-3 py-2 text-sm hover:bg-accent"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        AP Teams
-                      </Link>
-                      <Link
-                        href="/solutions/ar-teams"
-                        className="block rounded-md px-3 py-2 text-sm hover:bg-accent"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        AR Teams
-                      </Link>
-                      <Link
-                        href="/solutions/banks-fintech"
-                        className="block rounded-md px-3 py-2 text-sm hover:bg-accent"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        Banks & Fintech
-                      </Link>
-                      <Link
-                        href="/solutions/erp"
-                        className="block rounded-md px-3 py-2 text-sm hover:bg-accent"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        ERP Systems
-                      </Link>
-                      <Link
-                        href="/solutions/invoicing"
-                        className="block rounded-md px-3 py-2 text-sm hover:bg-accent"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        Invoicing Software
-                      </Link>
-                      <Link
-                        href="/solutions/ai-agents"
-                        className="block rounded-md px-3 py-2 text-sm hover:bg-accent"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        AI Agents
-                      </Link>
-                    </div>
-                  )}
+                    Home
+                  </Link>
+                  {/* <Link
+                    href="/product"
+                    className="block rounded-md px-3 py-2 text-base font-medium hover:bg-accent"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Product
+                  </Link> */}
+                  <div className="space-y-1">
+                    <button
+                      onClick={() => setMobileSolutionsOpen(!mobileSolutionsOpen)}
+                      className="flex w-full items-center justify-between rounded-md px-3 py-2 text-base font-medium hover:bg-accent"
+                    >
+                      Solutions
+                      <ChevronDown
+                        className={`h-4 w-4 transition-transform ${
+                          mobileSolutionsOpen ? "rotate-180" : ""
+                        }`}
+                      />
+                    </button>
+                    {mobileSolutionsOpen && (
+                      <div className="space-y-1 pl-3">
+                        <Link
+                          href="/solutions/ap-teams"
+                          className="block rounded-md px-3 py-2 text-sm hover:bg-accent"
+                          onClick={() => setMobileMenuOpen(false)}
+                        >
+                          AP Teams
+                        </Link>
+                        <Link
+                          href="/solutions/ar-teams"
+                          className="block rounded-md px-3 py-2 text-sm hover:bg-accent"
+                          onClick={() => setMobileMenuOpen(false)}
+                        >
+                          AR Teams
+                        </Link>
+                        <Link
+                          href="/solutions/banks-fintech"
+                          className="block rounded-md px-3 py-2 text-sm hover:bg-accent"
+                          onClick={() => setMobileMenuOpen(false)}
+                        >
+                          Banks & Fintech
+                        </Link>
+                        <Link
+                          href="/solutions/erp"
+                          className="block rounded-md px-3 py-2 text-sm hover:bg-accent"
+                          onClick={() => setMobileMenuOpen(false)}
+                        >
+                          ERP Systems
+                        </Link>
+                        <Link
+                          href="/solutions/invoicing"
+                          className="block rounded-md px-3 py-2 text-sm hover:bg-accent"
+                          onClick={() => setMobileMenuOpen(false)}
+                        >
+                          Invoicing Software
+                        </Link>
+                        <Link
+                          href="/solutions/ai-agents"
+                          className="block rounded-md px-3 py-2 text-sm hover:bg-accent"
+                          onClick={() => setMobileMenuOpen(false)}
+                        >
+                          AI Agents
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+                  <Link
+                    href="/pricing"
+                    className="block rounded-md px-3 py-2 text-base font-medium hover:bg-accent"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Pricing
+                  </Link>
+                  <Link
+                    href="/company"
+                    className="block rounded-md px-3 py-2 text-base font-medium hover:bg-accent"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    About Us
+                  </Link>
                 </div>
-                <Link
-                  href="/pricing"
-                  className="block rounded-md px-3 py-2 text-base font-medium hover:bg-accent"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Pricing
-                </Link>
-                <Link
-                  href="/company"
-                  className="block rounded-md px-3 py-2 text-base font-medium hover:bg-accent"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  About Us
-                </Link>
-              </div>
+              )}
+              
+              {/* Spacer for authenticated mobile menu */}
+              {isAuthenticated && (
+                <div className="flex-1"></div>
+              )}
 
               {/* Bottom Buttons */}
               <div className="border-t p-4">
                 <div className="flex flex-col gap-3">
                   {isAuthenticated ? (
                     <>
-                      <div className="px-3 py-2 text-sm font-medium">
-                        {user?.firstName || user?.email}
+                      <div className="flex items-center gap-3 px-3 py-2">
+                        <div className="w-10 h-10 rounded-full bg-[#0A1544] text-white font-semibold flex items-center justify-center shadow-lg">
+                          {getUserInitials()}
+                        </div>
+                        <div className="flex-1 text-sm font-medium">
+                          {user?.firstName && user?.lastName 
+                            ? `${user.firstName} ${user.lastName}` 
+                            : user?.email}
+                        </div>
                       </div>
+                      <Button 
+                        variant="primary" 
+                        asChild
+                        className="w-full justify-start !bg-[#0A1544] !text-white hover:!bg-[#101B5B]"
+                      >
+                        <a href="https://aplite-vendor.vercel.app/login" target="_blank" rel="noopener noreferrer">
+                          Go to Console
+                        </a>
+                      </Button>
                       <Button 
                         variant="secondary" 
                         onClick={handleLogout}
                         className="w-full justify-start"
                       >
+                        <LogOut className="w-4 h-4 mr-2" />
                         Logout
                       </Button>
                     </>

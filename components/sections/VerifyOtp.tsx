@@ -132,11 +132,11 @@ export default function VerifyOtp({ onBack, mode = 'registration', email: propEm
       const success = await verifyOtp(emailToUse, otpString);
       
       if (success) {
-        setSuccess('Email verified successfully! Redirecting to login...');
+        setSuccess('Email verified successfully! Redirecting to home...');
         
-        // Redirect to login after 2 seconds
+        // Redirect to home page after 2 seconds
         setTimeout(() => {
-          router.push('/login');
+          router.push('/');
         }, 2000);
       } else {
         // Error is already set in the store
