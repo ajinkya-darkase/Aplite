@@ -19,6 +19,15 @@ interface AuthState {
   company: Company | null;
   accessToken: string | null;
   
+  // Company data for detail pages
+  companyData: {
+    businessInfo?: any;
+    bankingDetails?: any;
+    paymentInstructions?: any;
+    contactInfo?: any;
+  } | null;
+  isLoadingCompany: boolean;
+  
   // Registration flow
   registrationEmail: string;
   registrationData: RegistrationData | null;
@@ -42,6 +51,10 @@ interface AuthState {
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   clearError: () => void;
+  
+  // Company data actions
+  setCompanyData: (data: any) => void;
+  setIsLoadingCompany: (loading: boolean) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -52,6 +65,8 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       company: null,
       accessToken: null,
+      companyData: null,
+      isLoadingCompany: false,
       registrationEmail: "",
       registrationData: null,
       isLoading: false,
@@ -306,6 +321,10 @@ export const useAuthStore = create<AuthState>()(
       setError: (error) => set({ error }),
 
       clearError: () => set({ error: null }),
+      
+      // Company data actions
+      setCompanyData: (data) => set({ companyData: data }),
+      setIsLoadingCompany: (loading) => set({ isLoadingCompany: loading }),
     }),
     {
       name: "auth-session",
@@ -317,6 +336,7 @@ export const useAuthStore = create<AuthState>()(
         company: state.company,
         accessToken: state.accessToken,
         registrationEmail: state.registrationEmail,
+        companyData: state.companyData,
       }),
     }
   )
